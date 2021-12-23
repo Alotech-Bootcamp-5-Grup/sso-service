@@ -1,5 +1,6 @@
 const uuid = require('uuid');
 const db = require('../config/database');
+require('dotenv').config();
 
 
 exports.isAuthorized = async (req, res) => {
@@ -25,14 +26,15 @@ exports.isAuthorized = async (req, res) => {
 const generateUniqueToken = (res, user_id, user_ip) => {
 
     const Access_Token = uuid.v4();
-    const url = JSON.stringify(["localhost:3000","localhost:3000"]);
-
+    // const url = JSON.stringify(["localhost:3000","localhost:3000"]);
+    const url = process.env.URLS;
+    
     const createdAt = new Date();
     // TTL = 1 day
-    // const ttl = new Date(86400000); 
+    const ttl = 86400000; 
     // TTL = 1 minute
-    const ttl = 60000; 
-    console.log(ttl);
+    // const ttl = 60000; 
+
 
     const sqlQuery = `INSERT INTO tokens (url, token, ttl, user_id, user_ip, createdAt) VALUES (${db.escape(url)}, ${db.escape(Access_Token)}, ${db.escape(ttl)}, ${db.escape(user_id)}, ${db.escape(user_ip)}, ${db.escape(createdAt)})`;
 
@@ -56,6 +58,9 @@ exports.isAccessTokenValid = function(req, res) {
         const createdAt = result[0]['createdAt'];
         const createdAtTime = createdAt.getTime();
         const expireTime = createdAtTime + ttl;
+
+        const url = result[0]["url"]
+        console.log("url:",typeof(url));
 
         const expireDate = new Date(expireTime);
         console.log(expireDate);
