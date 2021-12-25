@@ -1,6 +1,8 @@
-const uuid = require("uuid");
+// const uuid = require("uuid");
 const db = require("../config/database");
+const jwt = require('jsonwebtoken');
 require("dotenv").config();
+const bcrypt = require('bcrypt');
 
 exports.isAuthorized = async (req, res) => {
   const { redirectURL } = req.query;
@@ -13,8 +15,8 @@ exports.isAuthorized = async (req, res) => {
         .json({ message: "Your are not allowed to access the sso-server" });
     }
   }
+
   const username = req.body.username;
-  // hashli password gelecek
   const password = req.body.user_password;
   const user_ip = req.socket.remoteAddress;
 
@@ -25,26 +27,35 @@ exports.isAuthorized = async (req, res) => {
       )}`
     )
     .then(([result, fields]) => {
-      if (password == result[0]["user_password"]) {
-        generateUniqueToken(res, result[0]["id"], user_ip);
-      } else {
-        res.status(400).json({ response: false });
-      }
-    })
-    .catch((err) => {
+      bcrypt.compare(password, result[0]["user_password"]).then(
+        (valid) => {
+          if (!valid) {
+            return res.status(401).json({
+              error: new Error('Incorrect password!')
+            });
+          }
+          generateUniqueToken(res, result[0]["id"], user_ip);
+        }
+      )
+    }).catch((err) => {
+      console.log(err);
       res.status(400).json({ response: false });
     });
-};
+
+}
 
 const generateUniqueToken = (res, user_id, user_ip) => {
-  const Access_Token = uuid.v4();
-  const url = process.env.URLS;
-
   const createdAt = new Date();
   // TTL = 1 day
   const ttl = 86400000;
-  // TTL = 1 minute
-  // const ttl = 60000;
+
+  const Access_Token = jwt.sign(
+    { userId: user_id },
+    process.env.jwt_private_key,
+    { expiresIn: "1d" });
+
+  // const Access_Token = uuid.v4();
+  const url = process.env.URLS;
 
   const sqlQuery = `INSERT INTO tokens (url, token, ttl, user_id, user_ip, createdAt) VALUES (${db.escape(
     url
@@ -63,47 +74,54 @@ const generateUniqueToken = (res, user_id, user_ip) => {
 };
 
 exports.isAccessTokenValid = function (req, res) {
-  const url = req.protocol + "://" + req.get("host");
-
+  // const url = req.protocol + "://" + req.get("host");
+  const { redirectURL } = req.query;
   const now = new Date();
   const token = req.body.token;
   const user_ip = req.socket.remoteAddress;
-
+  console.log(redirectURL)
   db.promise()
     .query(`select * from tokens where token = ${db.escape(token)}`)
     .then(([result, fields]) => {
+
       // let expireDate = new Date();
-      const ttl = result[0]["ttl"];
-      const createdAt = result[0]["createdAt"];
-      const createdAtTime = createdAt.getTime();
-      const expireTime = createdAtTime + ttl;
+      // const ttl = result[0]["ttl"];
+      // const createdAt = result[0]["createdAt"];
+      // const createdAtTime = createdAt.getTime();
+      // const expireTime = createdAtTime + ttl;
 
       const allowedUrls = result[0]["url"];
       const allowedIp = result[0]["user_ip"];
 
-      if (!allowedUrls.includes(url)) {
+      if (!allowedUrls.includes(redirectURL)) {
         return res
           .status(400)
           .json({ message: "Your are not allowed to access the sso-server" });
       }
-      if (allowedIp === user_ip) {
+      /* if (allowedIp === user_ip) {
         return res
           .status(400)
           .json({ message: "Your are not allowed to access the sso-server" });
-      }
+      } */
+      jwt.verify(token, process.env.jwt_private_key, function(err, decoded) {
+        if (err) {
+          const user_id = result[0]["user_id"];
+          const user_ip = req.socket.remoteAddress;
+  
+          console.log("expired");
+          generateUniqueToken(res, user_id, user_ip);
+        }else{
+          res.status(200).json({ response: true });
+        }
+      });
+      // const expireDate = new Date(expireTime);
+      // console.log(expireDate);
 
-      const expireDate = new Date(expireTime);
-      console.log(expireDate);
+      // if (now < expireDate) {
+      //   
+      // } else {
 
-      if (now < expireDate) {
-        res.status(200).json({ response: true });
-      } else {
-        const user_id = result[0]["user_id"];
-        const user_ip = req.socket.remoteAddress;
-
-        console.log("expired");
-        generateUniqueToken(res, user_id, user_ip);
-      }
+      // }
     })
     .catch((err) => {
       res.status(400).json({ response: false });

@@ -1,0 +1,115 @@
+@import url("https://fonts.googleapis.com/css2?family=Roboto+Mono:wght@300;400;600;700&display=swap");
+.sign-up-page {
+  width: 100%;
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 10px;
+  font-family: "Roboto Mono", monospace;
+  color: #364547;
+  box-sizing: border-box;
+}
+.sign-up-wrapper {
+  width: 40%;
+  box-shadow: 0 19px 38px rgba(0, 0, 0, 0.3), 0 15px 12px rgba(0, 0, 0, 0.22);
+  border-radius: 2em;
+  padding: 2em 1em;
+}
+.sign-up-wrapper .sign-up-title {
+  font-size: 3.5em;
+  text-align: center;
+}
+.sign-up-wrapper .form-item {
+  font-size: 1.8em;
+  width: 70%;
+  margin: 1em auto;
+}
+.form-item .form-item-input {
+  display: flex;
+  align-items: center;
+  border: solid 1px #364547;
+  border-radius: 5px;
+}
+.form-item .form-item-input i {
+  padding: 0.5em;
+}
+.form-img {
+  width: 100%;
+}
+
+.form-item .form-item-input input {
+  width: 100%;
+  border: none;
+  padding: 1em 0;
+  outline: none;
+  border-radius: 5px;
+}
+.form-btns {
+  display: flex;
+  justify-content: space-between;
+}
+.form-item .form-btn {
+  width: 45%;
+  font-size: 18px;
+  border-radius: 5px;
+}
+.login-btn {
+  width: 100% !important;
+}
+.form-item .form-btn-login {
+  text-decoration: none;
+  text-align: center;
+  color: #fff;
+  background: linear-gradient(to right, #c31432 5%, #364547);
+  padding: 10px 0;
+}
+.form-item .form-btn-signup {
+  border: none;
+  background: linear-gradient(to right, #364547, #289672);
+  padding: 10px 0;
+  color: #fff;
+  cursor: pointer;
+}
+@media screen and (max-width: 1368px) {
+  .sign-up-wrapper {
+    width: 50%;
+  }
+}
+@media screen and (max-width: 1024px) {
+  .sign-up-wrapper {
+    width: 60%;
+  }
+}
+@media screen and (max-width: 768px) {
+  .sign-up-wrapper {
+    width: 80%;
+  }
+  .sign-up-wrapper .form-item {
+    width: 85%;
+  }
+}
+@media screen and (max-width: 480px) {
+  .sign-up-wrapper {
+    width: 95%;
+  }
+  .sign-up-wrapper .form-item {
+    width: 95%;
+  }
+}
+
+.register-text-color {
+  color: #4d3934;
+  text-decoration: none;
+}
+
+.register-bold {
+  font-weight: bold;
+}
+.register {
+  display: flex;
+  justify-content: flex-end;
+}
+.btn-cursor{
+    cursor: pointer;
+}
