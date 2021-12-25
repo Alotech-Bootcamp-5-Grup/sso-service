@@ -1,5 +1,6 @@
 import React, { Component, useState } from "react";
 import "../assets/styles/Login-Register.css";
+import authUser from "../services/auth";
 // import { Link } from "react-router-dom";
 // import loginUser from "../services/auth/login";
 
@@ -18,8 +19,12 @@ export default function Login() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (email && password) {
-      var data = { email: email, password: password };
-      // await loginUser(data);
+      var data = { username: email, user_password: password };
+     await authUser(data).then((response_data)=>{
+       if(response_data.response){
+        window.location.href = "http://localhost:3000/";
+       }
+     });
     }
   };
   return (
@@ -34,9 +39,9 @@ export default function Login() {
             <div className="form-item-input">
               <i className="fas fa-envelope"></i>
               <input
-                name="email"
-                type="email"
-                placeholder="E-Mail..."
+                name="username"
+                type="text"
+                placeholder="user name..."
                 onChange={(e) => setEmailFunction(e)}
                 required
               />

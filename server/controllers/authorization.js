@@ -70,8 +70,9 @@ const generateUniqueToken = (res, user_id, user_ip) => {
 };
 
 exports.isAccessTokenValid = function (req, res) {
-  // const url = req.protocol + "://" + req.get("host");
   const { redirectURL } = req.query;
+  // const url = req.protocol + "://" + req.get("host");
+  
   const url = new URL(redirectURL);
   console.log(url.origin);
   const now = new Date();
