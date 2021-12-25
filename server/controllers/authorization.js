@@ -5,50 +5,104 @@ const bcrypt = require('bcrypt');
 
 exports.isAuthorized = async (req, res) => {
   const { redirectURL } = req.query;
-  // direct access will give the error inside new URL.
-  if (redirectURL != null) {
-    const url = new URL(redirectURL);
-    if (!JSON.parse(process.env.URLS).includes(url.origin)) {
-      return res
-        .status(400)
-        .json({ message: "Your are not allowed to access the sso-server" });
-    }
+  if (!redirectURL) {
+    return res
+      .status(400)
+      .json({ message: "No redirectURL specified" });
+  }
+  const url = new URL(redirectURL);
+  if (!JSON.parse(process.env.URLS).includes(url.origin)) {
+    return res
+      .status(400)
+      .json({ message: "RedirectURL is wrong" });
   }
   const username = req.body.username;
-  // hashli password gelecek
   const password = req.body.user_password;
   const user_ip = req.socket.remoteAddress;
 
   db.promise()
     .query(
-      `select user_password, id from users where username = ${db.escape(
+      `select id, user_password, user_type from users where username = ${db.escape(
         username
       )}`
     )
     .then(([result, fields]) => {
+      const user_id = result[0]["id"]
+      const user_type = result[0]["user_type"]
       bcrypt.compare(password, result[0]["user_password"]).then(
         (valid) => {
           if (!valid) {
             return res.status(401).json({
-              error: new Error('Incorrect password!')
+              message: 'Incorrect password!'
             });
           }
-          generateUniqueToken(res, result[0]["id"], user_ip);
+          generateUniqueToken(res, user_id, user_ip, user_type);
         }
-      ) 
+      )
     })
     .catch((err) => {
       res.status(400).json({ response: false });
     });
-    
+
 };
 
-const generateUniqueToken = (res, user_id, user_ip) => {
+exports.isAccessTokenValid = function (req, res) {
+  const { redirectURL } = req.query;
+  if (!redirectURL) {
+    return res
+      .status(400)
+      .json({ message: "No redirectURL specified" });
+  }
+  const url = new URL(redirectURL);
+  const now = new Date();
+  const token = req.headers["x-access-token"];
+  const user_ip = req.socket.remoteAddress;
+
+  db.promise()
+    .query(`SELECT tokens.*, users.user_type as user_type FROM users JOIN tokens ON users.id = tokens.user_id AND tokens.token=${db.escape(token)}`)
+    .then(([result, fields]) => {
+      const ttl = result[0]["ttl"];
+      const createdAt = result[0]["createdAt"];
+      const createdAtTime = createdAt.getTime();
+      const expireTime = createdAtTime + ttl;
+
+      const allowedUrls = result[0]["url"];
+      const allowedIp = result[0]["user_ip"];
+      if (!allowedUrls.includes(url.origin)) {
+        return res
+          .status(400)
+          .json({ message: "Wrong redirectURL" });
+      }
+      if (allowedIp !== user_ip) {
+        return res
+          .status(400)
+          .json({ message: "Unknown IP adress" });
+      }
+      const expireDate = new Date(expireTime);
+
+
+      if (now < expireDate) {
+        const user_type =result[0]["user_type"]
+        res.status(200).json({ response: true, user_type });
+      } else {
+        const user_id = result[0]["user_id"];
+        const user_ip = req.socket.remoteAddress;
+
+        console.log("expired");
+        generateUniqueToken(res, user_id, user_ip);
+      }
+    })
+    .catch((err) => {
+      res.status(400).json({ response: false, "message":"token is invalid" });
+    });
+};
+
+const generateUniqueToken = (res, user_id, user_ip, user_type) => {
   const Access_Token = uuid.v4();
   const url = process.env.URLS;
 
   const createdAt = new Date();
-  // TTL = 1 day // 86400000
+  // TTL = 1 day
   const ttl = 86400000;
   // TTL = 1 minute
   // const ttl = 60000;
@@ -62,64 +116,9 @@ const generateUniqueToken = (res, user_id, user_ip) => {
   db.promise()
     .query(sqlQuery)
     .then(() => {
-      res.status(200).json({ response: true, user_id, Access_Token });
+      res.status(200).json({ response: true, user_id, Access_Token, user_type });
     })
     .catch((err) => {
-      res.status(400).json({ response: false });
+      res.status(400).json({ response: false, "message":"problem occured while access token being generated" });
     });
 };
-
-exports.isAccessTokenValid = function (req, res) {
-  const { redirectURL } = req.query;
-  // const url = req.protocol + "://" + req.get("host");
-  
-  const url = new URL(redirectURL);
-  console.log(url.origin);
-  const now = new Date();
-  const token = req.body.token;
-  const user_ip = req.socket.remoteAddress;
-
-  db.promise()
-    .query(`select * from tokens where token = ${db.escape(token)}`)
-    .then(([result, fields]) => {
-      const ttl = result[0]["ttl"];
-      // console.log("ttl" + ttl)
-      const createdAt = result[0]["createdAt"];
-      const createdAtTime = createdAt.getTime();
-      const expireTime = createdAtTime + ttl;
-
-      const allowedUrls = result[0]["url"];
-      const allowedIp = result[0]["user_ip"];
-      if (!allowedUrls.includes(url.origin)) {
-        return res
-          .status(400)
-          .json({ message: "Your are not allowed to access the sso-server" });
-      }
-      if (allowedIp !== user_ip) {
-        return res
-          .status(400)
-          .json({ message: "Your are not allowed to access the sso-server" });
-      }
-      console.log("expireTime" + expireTime);
-      const expireDate = new Date(expireTime);
-      
-      
-      if (now < expireDate) {
-        res.status(200).json({ response: true });
-      } else {
-        const user_id = result[0]["user_id"];
-        const user_ip = req.socket.remoteAddress;
-
-        console.log("expired");
-        generateUniqueToken(res, user_id, user_ip);
-      }
-    })
-    .catch((err) => {
-      res.status(400).json({ response: false });
-    });
-};
-
-
-
-
-
