@@ -11,6 +11,7 @@ export default async function authUser(data) {
       data: data,
       headers: {'Content-Type':'application/json'},
     })
+    cookies.set('user_id', res.data.user_id);
     cookies.set('access_token', res.data.Access_Token);
     return res.data;
   } catch (error) {

@@ -14,7 +14,7 @@ exports.isAuthorized = async (req, res) => {
   if (!JSON.parse(process.env.URLS).includes(url.origin)) {
     return res
       .status(400)
-      .json({ message: "RedirectURL is wrong" });
+      .json({ message: "RedirectURL is wrong" }); // burada wrong demek yerine user is not allowed demek daha iyi olur.
   }
   const username = req.body.username;
   const password = req.body.user_password;
@@ -73,11 +73,12 @@ exports.isAccessTokenValid = function (req, res) {
           .status(400)
           .json({ message: "Wrong redirectURL" });
       }
+      /* console.log(allowedIp,"||" ,user_ip)
       if (allowedIp !== user_ip) {
         return res
           .status(400)
           .json({ message: "Unknown IP adress" });
-      }
+      } */
       const expireDate = new Date(expireTime);
 
 
