@@ -84,17 +84,16 @@ exports.isAccessTokenValid = function (req, res) {
 
       if (now < expireDate) {
         const user_type =result[0]["user_type"]
-        res.status(200).json({ response: true, user_type });
+        const user_id =result[0]["user_id"]
+        res.status(200).json({ response: true, user_id, user_type });
       } else {
         const user_id = result[0]["user_id"];
         const user_ip = req.socket.remoteAddress;
-
-        console.log("expired");
-        generateUniqueToken(res, user_id, user_ip);
+        generateUniqueToken(res, user_id, user_ip, user_type);
       }
     })
     .catch((err) => {
-      res.status(400).json({ response: false, "message":"token is invalid" + err});
+      res.status(400).json({ response: false, "message":"token is invalid", err });
     });
 };
 
