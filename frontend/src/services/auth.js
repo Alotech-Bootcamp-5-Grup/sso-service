@@ -5,9 +5,10 @@ import Cookies from 'universal-cookie';
 export default async function authUser(data) {
   const cookies = new Cookies();
   try {
+    const redirectURL = window.location.href.split("=")[1];
     const res = await axios({
       method: "post",
-      url: "http://localhost:3010?redirectURL=http://localhost:3011",
+      url: "http://localhost:3010?redirectURL=" + redirectURL,
       data: data,
       headers: {'Content-Type':'application/json'},
     })

@@ -4,7 +4,7 @@ import authUser from "../services/auth";
 // import { Link } from "react-router-dom";
 // import loginUser from "../services/auth/login";
 
-export default function Login() { 
+export default function Login() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
@@ -20,13 +20,15 @@ export default function Login() {
     e.preventDefault();
     if (email && password) {
       var data = { username: email, user_password: password };
-     await authUser(data).then((response_data)=>{
-       if(response_data.response){
-        window.location.href = "http://localhost:3000/";
-       }
-     });
+      const redirectURL = window.location.href.split("=")[1];
+      await authUser(data).then((response_data) => {
+        if (response_data.response) {
+          window.location.href = redirectURL;
+        }
+      });
     }
   };
+  
   return (
     <div className="sign-up-page">
       <div className="sign-up-wrapper">

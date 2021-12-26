@@ -94,7 +94,7 @@ exports.isAccessTokenValid = function (req, res) {
       }
     })
     .catch((err) => {
-      res.status(400).json({ response: false, "message":"token is invalid" });
+      res.status(400).json({ response: false, "message":"token is invalid" + err});
     });
 };
 
