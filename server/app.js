@@ -13,4 +13,9 @@ app.use("/", authRoute);
 
 app.listen(PORT, () => {
   console.log(`Server started on port ${PORT}`);
+// app listen after database table created
+createLogTable(()=>{
+  app.listen(PORT, () => {
+    logger.debug('sys', {message: `Server started on port ${PORT}`, type: 'sso'})
+  });
 });
