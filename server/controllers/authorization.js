@@ -41,7 +41,7 @@ exports.isAuthorized = async (req, res) => {
               message: 'Incorrect password!'
             });
           }
-          generateUniqueToken(res, user_id, user_ip, user_type);
+          generateUniqueToken(req, res, user_id, user_ip, user_type);
         }
       )
     })
@@ -97,7 +97,7 @@ exports.isAccessTokenValid = function (req, res) {
       } else {
         const user_id = result[0]["user_id"];
         const user_ip = req.socket.remoteAddress;
-        generateUniqueToken(res, user_id, user_ip, user_type);
+        generateUniqueToken(req, res, user_id, user_ip, user_type);
       }
     })
     .catch((err) => {
@@ -106,7 +106,7 @@ exports.isAccessTokenValid = function (req, res) {
     });
 };
 
-const generateUniqueToken = (res, user_id, user_ip, user_type) => {
+const generateUniqueToken = (req, res, user_id, user_ip, user_type) => {
   const Access_Token = uuid.v4();
   const url = process.env.URLS;
 
