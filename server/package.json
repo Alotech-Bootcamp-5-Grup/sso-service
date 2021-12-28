@@ -16,7 +16,9 @@
     "express": "^4.17.2",
     "jsonwebtoken": "^8.5.1",
     "mysql2": "^2.3.3",
-    "uuid": "^8.3.2"
+    "uuid": "^8.3.2",
+    "winston": "^3.3.3",
+    "winston-mysql": "^1.1.1"
   },
   "devDependencies": {
     "nodemon": "^2.0.15"
