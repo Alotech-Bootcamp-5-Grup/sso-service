@@ -1,5 +1,4 @@
 import axios from "axios";
-// import { requestUrl } from "../../helpers/requestUrl";
 import Cookies from 'universal-cookie';
 
 export default async function authUser(data) {

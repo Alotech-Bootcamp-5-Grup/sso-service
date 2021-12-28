@@ -1,8 +1,6 @@
 import React, { Component, useState } from "react";
 import "../assets/styles/Login-Register.css";
 import authUser from "../services/auth";
-// import { Link } from "react-router-dom";
-// import loginUser from "../services/auth/login";
 
 export default function Login() {
   const [email, setEmail] = useState("");
@@ -34,9 +32,6 @@ export default function Login() {
       <div className="sign-up-wrapper">
         <h2 className="sign-up-title">Giriş Yap</h2>
         <form action="" onSubmit={(e) => handleSubmit(e)}>
-          {/* <div className="form-item">
-              <img src={""} alt="Logo" className="form-img" />
-            </div> */}
           <div className="form-item">
             <div className="form-item-input">
               <i className="fas fa-envelope"></i>
@@ -67,17 +62,6 @@ export default function Login() {
               GİRİŞ YAP
             </button>{" "}
           </div>
-          {/* <div className="form-item">
-            <p className="register">
-              Üye değil misiniz? {"  "}
-              <Link
-                to="/auth/register"
-                className="register-bold register-text-color"
-              >
-                Hemen Üye Ol!
-              </Link>
-            </p>
-          </div> */}
         </form>
       </div>
     </div>
