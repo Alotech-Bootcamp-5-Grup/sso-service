@@ -1,12 +1,19 @@
-import React, { Component, useState } from "react";
+import React, { Component, useState, useEffect } from "react";
 import "../assets/styles/Login-Register.css";
 import authUser from "../services/auth";
-// import { Link } from "react-router-dom";
-// import loginUser from "../services/auth/login";
+import Cookies from 'universal-cookie';
 
 export default function Login() {
+  const cookies = new Cookies();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+
+  useEffect(() => {
+    const access_token = cookies.get("access_token");
+    if (access_token || !window.location.href.split("=")[1]) {
+      window.location.href = `${process.env.REACT_APP_DEFAULT_REDIRECT_URL}`;
+    }
+  }, []);
 
   const setEmailFunction = (e) => {
     setEmail(e.target.value);
@@ -28,15 +35,12 @@ export default function Login() {
       });
     }
   };
-  
+
   return (
     <div className="sign-up-page">
       <div className="sign-up-wrapper">
         <h2 className="sign-up-title">Giriş Yap</h2>
         <form action="" onSubmit={(e) => handleSubmit(e)}>
-          {/* <div className="form-item">
-              <img src={""} alt="Logo" className="form-img" />
-            </div> */}
           <div className="form-item">
             <div className="form-item-input">
               <i className="fas fa-envelope"></i>
@@ -67,17 +71,6 @@ export default function Login() {
               GİRİŞ YAP
             </button>{" "}
           </div>
-          {/* <div className="form-item">
-            <p className="register">
-              Üye değil misiniz? {"  "}
-              <Link
-                to="/auth/register"
-                className="register-bold register-text-color"
-              >
-                Hemen Üye Ol!
-              </Link>
-            </p>
-          </div> */}
         </form>
       </div>
     </div>

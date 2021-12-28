@@ -1,5 +1,4 @@
 import axios from "axios";
-// import { requestUrl } from "../../helpers/requestUrl";
 import Cookies from 'universal-cookie';
 
 export default async function authUser(data) {
@@ -8,7 +7,7 @@ export default async function authUser(data) {
     const redirectURL = window.location.href.split("=")[1];
     const res = await axios({
       method: "post",
-      url: "http://localhost:3010?redirectURL=" + redirectURL,
+      url: `${process.env.REACT_APP_SSO_SERVER_URL}?redirectURL=${redirectURL}`,
       data: data,
       headers: {'Content-Type':'application/json'},
     })
