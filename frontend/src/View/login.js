@@ -1,10 +1,8 @@
 import React, { useState } from "react";
 import "../assets/styles/Login-Register.css";
 import authUser from "../services/auth";
-import Cookies from 'universal-cookie';
 
 export default function Login() {
-  const cookies = new Cookies();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
