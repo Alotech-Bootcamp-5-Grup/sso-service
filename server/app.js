@@ -22,3 +22,7 @@ createLogTable(()=>{
     logger.debug('sys', {message: `Server started on port ${PORT}`, type: 'sso'})
   });
 });
+
+module.exports = {
+  app: app
+}

@@ -8,14 +8,14 @@ require("dotenv").config();
 exports.isAuthorized = async (req, res) => {
   const { redirectURL } = req.query;
   if (!redirectURL) {
-    logger.warn('missing url', {message: `${req.method} - ${req.socket.remoteAddress} - ${req.url} - 400 -`, type: 'sso'})
+    logger.warn('missing url', { message: `${req.method} - ${req.socket.remoteAddress} - ${req.url} - 400 -`, type: 'sso' })
     return res
       .status(400)
       .json({ message: "No redirectURL specified" });
   }
   const url = new URL(redirectURL);
   if (!JSON.parse(process.env.URLS).includes(url.origin)) {
-    logger.warn('wrong url', {message: `${req.method} - ${req.socket.remoteAddress} - ${req.url} - 400 -`, type: 'sso'})
+    logger.warn('wrong url', { message: `${req.method} - ${req.socket.remoteAddress} - ${req.url} - 400 -`, type: 'sso' })
     return res
       .status(400)
       .json({ message: "RedirectURL is wrong" }); // burada wrong demek yerine user is not allowed demek daha iyi olur.
@@ -36,7 +36,7 @@ exports.isAuthorized = async (req, res) => {
       bcrypt.compare(password, result[0]["user_password"]).then(
         (valid) => {
           if (!valid) {
-            logger.warn('wrong password', {message: `${req.method} - ${req.socket.remoteAddress} - ${req.url} - 401 -`, type: 'sso'})
+            logger.warn('wrong password', { message: `${req.method} - ${req.socket.remoteAddress} - ${req.url} - 401 -`, type: 'sso' })
             return res.status(401).json({
               message: 'Incorrect password!'
             });
@@ -46,7 +46,7 @@ exports.isAuthorized = async (req, res) => {
       )
     })
     .catch((err) => {
-      logger.error('database error', {message: `${req.method} - ${req.socket.remoteAddress} - ${req.url} - 500 -`, type: 'sso'})
+      logger.error('database error', { message: `${req.method} - ${req.socket.remoteAddress} - ${req.url} - 500 -`, type: 'sso' })
       res.status(500).json({ response: false });
     });
 };
@@ -54,7 +54,7 @@ exports.isAuthorized = async (req, res) => {
 exports.isAccessTokenValid = function (req, res) {
   const { redirectURL } = req.query;
   if (!redirectURL) {
-    logger.warn('missing url', {message: `${req.method} - ${req.socket.remoteAddress} - ${req.url} - 400 -`, type: 'sso'})
+    logger.warn('missing url', { message: `${req.method} - ${req.socket.remoteAddress} - ${req.url} - 400 -`, type: 'sso' })
     return res
       .status(400)
       .json({ message: "No redirectURL specified" });
@@ -75,14 +75,14 @@ exports.isAccessTokenValid = function (req, res) {
       const allowedUrls = result[0]["url"];
       const allowedIp = result[0]["user_ip"];
       if (!allowedUrls.includes(url.origin)) {
-        logger.warn('wrong url', {message: `${req.method} - ${req.socket.remoteAddress} - ${req.url} - 400 -`, type: 'sso'})
+        logger.warn('wrong url', { message: `${req.method} - ${req.socket.remoteAddress} - ${req.url} - 400 -`, type: 'sso' })
         return res
           .status(400)
           .json({ message: "Wrong redirectURL" });
       }
-      /* console.log(allowedIp,"||" ,user_ip)
+      /* console.log(allowedIp, "||", user_ip)
       if (allowedIp !== user_ip) {
-        logger.warn('diffrent ip', {message: `${req.method} - ${req.socket.remoteAddress} - ${req.url} - 400 -`, type: 'sso'})
+        logger.warn('diffrent ip', { message: `${req.method} - ${req.socket.remoteAddress} - ${req.url} - 400 -`, type: 'sso' })
         return res
           .status(400)
           .json({ message: "Unknown IP adress" });
@@ -90,9 +90,9 @@ exports.isAccessTokenValid = function (req, res) {
       const expireDate = new Date(expireTime);
 
       if (now < expireDate) {
-        const user_type =result[0]["user_type"]
-        const user_id =result[0]["user_id"]
-        logger.debug('user login', {message: `${req.method} - ${req.socket.remoteAddress} - ${req.url} - 200 -`, type: 'sso'})
+        const user_type = result[0]["user_type"]
+        const user_id = result[0]["user_id"]
+        logger.debug('user login', { message: `${req.method} - ${req.socket.remoteAddress} - ${req.url} - 200 -`, type: 'sso' })
         res.status(200).json({ response: true, user_id, user_type });
       } else {
         const user_id = result[0]["user_id"];
@@ -101,8 +101,8 @@ exports.isAccessTokenValid = function (req, res) {
       }
     })
     .catch((err) => {
-      logger.warn('invalid token', {message: `${req.method} - ${req.socket.remoteAddress} - ${req.url} - 400 -`, type: 'sso'})
-      res.status(400).json({ response: false, "message":"token is invalid" });
+      logger.warn('invalid token', { message: `${req.method} - ${req.socket.remoteAddress} - ${req.url} - 400 -`, type: 'sso' })
+      res.status(400).json({ response: false, "message": "token is invalid" });
     });
 };
 
@@ -125,11 +125,11 @@ const generateUniqueToken = (req, res, user_id, user_ip, user_type) => {
   db.promise()
     .query(sqlQuery)
     .then(() => {
-      logger.debug('token created', {message: `${req.method} - ${req.socket.remoteAddress} - ${req.url} - 200 -`, type: 'sso'})
+      logger.debug('token created', { message: `${req.method} - ${req.socket.remoteAddress} - ${req.url} - 200 -`, type: 'sso' })
       res.status(200).json({ response: true, user_id, Access_Token, user_type });
     })
     .catch((err) => {
-      logger.warn('database error', {message: `${req.method} - ${req.socket.remoteAddress} - ${req.url} - 500 -`, type: 'sso'})
-      res.status(500).json({ response: false, "message":"problem occured while access token being generated" });
+      logger.warn('database error', { message: `${req.method} - ${req.socket.remoteAddress} - ${req.url} - 500 -`, type: 'sso' })
+      res.status(500).json({ response: false, "message": "problem occured while access token being generated" });
     });
 };
