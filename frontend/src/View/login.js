@@ -8,12 +8,12 @@ export default function Login() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
-  useEffect(() => {
+  /* useEffect(() => {
     const access_token = cookies.get("access_token");
     if (access_token || !window.location.href.split("=")[1]) {
       window.location.href = `${process.env.REACT_APP_DEFAULT_REDIRECT_URL}`;
     }
-  }, []);
+  }, []); */
 
   const setEmailFunction = (e) => {
     setEmail(e.target.value);
@@ -39,7 +39,7 @@ export default function Login() {
   return (
     <div className="sign-up-page">
       <div className="sign-up-wrapper">
-        <h2 className="sign-up-title">Giriş Yap</h2>
+        <h2 className="sign-up-title">Login</h2>
         <form action="" onSubmit={(e) => handleSubmit(e)}>
           <div className="form-item">
             <div className="form-item-input">
@@ -47,7 +47,7 @@ export default function Login() {
               <input
                 name="username"
                 type="text"
-                placeholder="user name..."
+                placeholder="User Name..."
                 onChange={(e) => setEmailFunction(e)}
                 required
               />
@@ -60,7 +60,7 @@ export default function Login() {
               <input
                 name="password"
                 type="password"
-                placeholder="Şifre..."
+                placeholder="Password..."
                 onChange={(e) => setPasswordFunction(e)}
                 required
               />
@@ -68,7 +68,7 @@ export default function Login() {
           </div>
           <div className="form-item form-btns ">
             <button className="form-btn form-btn-login login-btn btn-cursor">
-              GİRİŞ YAP
+              Login
             </button>{" "}
           </div>
         </form>
