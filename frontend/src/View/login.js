@@ -1,4 +1,4 @@
-import React, { Component, useState, useEffect } from "react";
+import React, { useState } from "react";
 import "../assets/styles/Login-Register.css";
 import authUser from "../services/auth";
 import Cookies from 'universal-cookie';
@@ -7,13 +7,6 @@ export default function Login() {
   const cookies = new Cookies();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-
-  /* useEffect(() => {
-    const access_token = cookies.get("access_token");
-    if (access_token || !window.location.href.split("=")[1]) {
-      window.location.href = `${process.env.REACT_APP_DEFAULT_REDIRECT_URL}`;
-    }
-  }, []); */
 
   const setEmailFunction = (e) => {
     setEmail(e.target.value);

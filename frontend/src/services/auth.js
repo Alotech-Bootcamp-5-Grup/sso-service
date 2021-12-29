@@ -5,8 +5,6 @@ export default async function authUser(data) {
   const cookies = new Cookies();
   try {
     const redirectURL = window.location.href.split("=")[1];
-    console.log("here url ", `${process.env.REACT_APP_SSO_SERVER_URL}?redirectURL=${redirectURL}`)
-
     const res = await axios({
       method: "post",
       url: `${process.env.REACT_APP_SSO_SERVER_URL}?redirectURL=${redirectURL}`,
