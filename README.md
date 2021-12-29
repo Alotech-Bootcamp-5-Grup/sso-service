@@ -6,7 +6,7 @@ Bu uygulama, Patika'nın düzenlediği AloTech Fullstack Bootcamp'i bitirme proj
 > Eren Tanrıverdioğlu - Furkan Aktaş - Parahat Nepesov - Timur Turbil
 
 ## Projenin Mimarisi
-![project architecture](https://github.com/Alotech-Bootcamp-5-Grup/user-manager-module/blob/main/project_analysis.jpg)
+![project architecture](https://github.com/Alotech-Bootcamp-5-Grup/user-manager-module/blob/main/proje-diagram.jpg)
 
 ## Servisin İşlevi
 SSO Authorization Servisi, birden fazla servisin, tek merkezden yapılan kullanıcı girişiyle kullanılabilmesini sağlar. Bağlı servis ve uygulamalar, giriş isteklerini SSO servisine yönlendirir, endpoint'lerine yapılan isteklerde kullanıcı ve yetki doğrulaması için SSO servisine istek gönderir.
