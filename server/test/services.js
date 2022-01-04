@@ -2,6 +2,7 @@ const Sequelize = require("sequelize");
 const bcrypt = require("bcrypt");
 require("dotenv").config();
 
+
 const sequelize = new Sequelize(
     process.env.DB_NAME,
     process.env.DB_USER,
