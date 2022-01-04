@@ -6,21 +6,32 @@ export default function Login() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
+  // setEmailFunction sayesinde e mail'i set ediyoruz
   const setEmailFunction = (e) => {
     setEmail(e.target.value);
   };
 
+  // setPasswordFunction sayesinde şifreyi'i set ediyoruz
   const setPasswordFunction = (e) => {
     setPassword(e.target.value);
   };
 
+  // handleSubmit sayesinde aldığımız bilgileri kullanarak kullanıcıyı 
+  // authUser servisimiz sayesinde authenticate ediyoruz.
   const handleSubmit = async (e) => {
     e.preventDefault();
+
+    // e mail ve password'un verilip verilmediğini kontro ediyoruz.
     if (email && password) {
       var data = { username: email, user_password: password };
+
+      // burada hangi frontend'den login ekranına gelinmiş onu bulmak için = işaretine göre split edioyruz.
+      // http://localhost:3010/?redirectURL=http://localhost:3000
+      // örnek url 29. satırdaki gibi olucak. = ifadesine göre split edinde redirectUrli buluyoruz.
       const redirectURL = window.location.href.split("=")[1];
       await authUser(data).then((response_data) => {
         if (response_data.response) {
+          // eğer authenticate başarlı olmuşsa geldiğimiz sayfaya tekrar redirectURL'i kullanarak geri gidiyoru.
           window.location.href = redirectURL;
         }
       });

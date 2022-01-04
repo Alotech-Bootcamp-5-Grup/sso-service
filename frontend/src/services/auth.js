@@ -11,7 +11,10 @@ export default async function authUser(data) {
       data: data,
       headers: { 'Content-Type': 'application/json' },
     })
+
+    // burada kullanıcı authenticate ettikten sonra user_ id sini cookie'ye set ediyoruz 
     cookies.set('user_id', res.data.user_id);
+    // burada ise kullanıcı authenticate ettikten sonra Access_Token'ını cookie'ye set ediyoruz.
     cookies.set('access_token', res.data.Access_Token);
     return res.data;
   } catch (error) {
