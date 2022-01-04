@@ -3,6 +3,7 @@ const winstonMysql = require('winston-mysql');
 
 require('dotenv').config();
 
+// veritabanı (mysql) bağlantı ayarları
 const options = {
   host : process.env.DB_HOST,
   user : process.env.DB_USER,
@@ -11,6 +12,8 @@ const options = {
   table: 'logs'
 };
 
+// winston paketi ile serverda yapılan işlemlerin logları 
+// alınıp bunları veritabanına yazan metodun gerçekleştirimi
 const logger = winston.createLogger({
   level: process.env.DEBUG_MODE,
   format: winston.format.json(),

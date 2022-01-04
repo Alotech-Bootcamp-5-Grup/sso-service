@@ -1,6 +1,7 @@
 const db = require('./database');
 const logger = require("./winston")
 
+// veritabanında logları tutabilmek için log tablosu olusturma sorgusu
 let query = 'CREATE TABLE IF NOT EXISTS `logs` ( \
  `id` INT NOT NULL AUTO_INCREMENT, \
  `level` VARCHAR(16) NOT NULL, \
@@ -9,6 +10,8 @@ let query = 'CREATE TABLE IF NOT EXISTS `logs` ( \
  `timestamp` DATETIME NOT NULL, \
  PRIMARY KEY (`id`));'
 
+// bu fonksiyon servera ait logları veritabanında logları tutabileceğimiz 
+// bir tablo oluşturmaktayız.
 const createLogTable = (callback) => {
   db.promise().query(query)
   .then(()=>{
